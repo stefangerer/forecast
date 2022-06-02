@@ -28,11 +28,35 @@ L.control.scale({
     imperial: false
 }).addTo(map);
 
+//Datum formatieren 
+let formatData = function(date){
+    return date.toLocaleDateString("de-AT", {
+        month: "long", 
+        day: "numeric",
+        hour: "2-digit", 
+        minute: "2-digit"
+    }) + " Uhr"; 
+}
+
+
 // Windvorhersage
 async function loadWind(url) {
     const response = await fetch(url); 
     const jsondata = await response.json();
-    console.log(jsondata); 
+    //console.log(jsondata);
+    //console.log("Zeitpunkt ERstellung", jsondata[0].header.refTime); 
+    //console.log("Zeitpunkt Vorhersage", jsondata[0].header.forecastTime);
+    
+    let forecastData = new Date(jsondata[0].header.refTime);
+    //console.log("Echtes Datum Erstellung", forecastData); 
+    forecastData.setHours(forecastData.getHours() + jsondata[0].header.forecastTime); 
+    //console.log("Echtes Datum Vorhersage", forecastData);
+
+    let forecastLabel = formatData(forecastData); 
+
+    layerControl.addOverlay(overlays.wind, `ECMWF Windvorhersage für ${forecastLabel}`)
+
+
 };
 loadWind("https://geographie.uibk.ac.at/webmapping/ecmwf/data/wind-10u-10v-europe.json");
 
