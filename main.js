@@ -6,7 +6,7 @@ let startLayer = L.tileLayer.provider("Esri.WorldImagery")
 // Blick auf Innsbruck
 const map = L.map("map", {
     center: [47.267222, 11.392778],
-    zoom: 5,
+    zoom: 13,
     layers: [
         startLayer
     ]
@@ -30,7 +30,9 @@ L.control.scale({
 
 // Windvorhersage
 async function loadWind(url) {
-
+    const response = await fetch(url); 
+    const jsondata = await response.json();
+    console.log(jsondata); 
 };
 loadWind("https://geographie.uibk.ac.at/webmapping/ecmwf/data/wind-10u-10v-europe.json");
 
